@@ -1,4 +1,5 @@
 language: objective-c
+install: true
 branches:
   only:
   - master
