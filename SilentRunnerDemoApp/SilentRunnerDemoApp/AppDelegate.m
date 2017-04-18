@@ -22,7 +22,8 @@
 
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    NSLog(@"Hi Folks!");
+    BOOL res =  application.isIgnoringInteractionEvents;
+    NSLog(@"sdfdsf");
 }
 
 
