@@ -17,13 +17,30 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [SRServer enableLogging];
+    
+    // register your app delegate to be callable from test server
     [SRClientPool addClient:[UIApplication sharedApplication].delegate forTag:@"app"];
-    self.serv = [SRServer serverWithURL:@"ws://localhost:9000/chat" withErrorHandler:^(NSError * error) {
+    self.serv = [SRServer serverWithURL:@"http://192.168.193.107:1489"  withErrorHandler:^(NSError * error) {
         [self.serv sendErrorMessage:error];
     }];
-    [self.serv runServer];
 }
 
+- (IBAction)testAction:(id)sender {
+    [self.serv webSocket:self.serv.webSocket didReceiveMessage:@"Should see error at Silent Viewer"];
+}
+
+- (IBAction)runServer:(id)sender {
+    [self.serv runServer:^(SRWebSocket* socket) {
+        NSLog(@"server started");
+    }];
+}
+
+- (IBAction)stopServer:(id)sender {
+    [self.serv closeServer:^(SRWebSocket* socket) {
+        NSLog(@"server stopped");
+    }];
+}
 
 
 @end

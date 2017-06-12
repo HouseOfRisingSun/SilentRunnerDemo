@@ -54,7 +54,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ## OCHamcrest
 
 OCHamcrest by Jon Reid, http://qualitycoding.org/about/
-Copyright 2016 hamcrest.org
+Copyright 2017 hamcrest.org
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

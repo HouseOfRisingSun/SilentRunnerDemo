@@ -36,6 +36,7 @@ static NSString* const SRMockFabricReturnValueKey = @"returnValue";
         return;
     }
     NSMethodSignature* sign = [model methodSignatureForSelector:methodSel];
+    
     if (!sign){
         if (error) {
             NSString* errorMsg = [NSString stringWithFormat:@"can't create method signature for model %@ with selector %@", model, methodName];
@@ -55,7 +56,92 @@ static NSString* const SRMockFabricReturnValueKey = @"returnValue";
     if ( dict[SRMockFabricReturnValueKey] ){
         id res = nil;
         [inv getReturnValue:&res];
-        [given(res) willReturn:dict[SRMockFabricReturnValueKey]];
+        id retValue = dict[SRMockFabricReturnValueKey];
+        const char *retType = sign.methodReturnType;
+        [self mapRetValue:retValue toMockType:retType forMock:res];
+    }
+}
+
+// Yes, i know, it's ugly
++ (void)mapRetValue:(id)retValue toMockType:(const char *)retType forMock:(id)res{
+    if ( !strcmp(retType, @encode(BOOL)) || !strcmp(retType, @encode(unsigned char)) ){
+        BOOL arg = ( [retValue isEqual:@"YES"] || [retValue isEqual:@1] ) ? YES : NO;
+        [given(res) willReturnBool:arg];
+    }else if ( !strcmp(retType, @encode(short)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnShort:[retValue shortValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(int)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnInt:[retValue intValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(long)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnLong:[retValue longValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(long long)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnLongLong:[retValue longLongValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(NSInteger)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnInteger:[retValue integerValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(unsigned int)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnUnsignedInt:[retValue unsignedIntValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(unsigned short)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnUnsignedShort:[retValue unsignedShortValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(unsigned long)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnUnsignedLong:[retValue unsignedLongValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(unsigned long long)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnUnsignedLongLong:[retValue unsignedLongLongValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(NSUInteger)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnUnsignedInteger:[retValue unsignedIntegerValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(float)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnFloat:[retValue floatValue]];
+        }else{
+            goto default_type;
+        }
+    }else if ( !strcmp(retType, @encode(double)) ){
+        if ( [retValue isKindOfClass:NSNumber.class]){
+            [given(res) willReturnDouble:[retValue doubleValue]];
+        }else{
+            goto default_type;
+        }
+    }else {
+default_type:
+        [given(res) willReturn:retValue];
     }
 }
 
